@@ -30,7 +30,7 @@ maximum_norm(std::vector<double> x)
     double m = 0;    
     for (auto x_i: x) {
         double abs = x_i > 0 ? x_i : -x_i;
-        m = x_i > m ? x_i : m;
+        m = abs > m ? abs : m;
     }
     return m;
 }
