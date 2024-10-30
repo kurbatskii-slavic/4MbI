@@ -31,6 +31,8 @@ public:
     }
 };
 
+std::vector<double> operator*(Matrix &A, const std::vector<double> &x);
+std::vector<double> operator-(const std::vector<double> &self, const std::vector<double> &other);
 std::ostream &operator<<(std::ostream &os, Matrix& A);
 std::istream &operator>>(std::istream &is, Matrix& A);
 double maximum_norm(std::vector<double> x);
