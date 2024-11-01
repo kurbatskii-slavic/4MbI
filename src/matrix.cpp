@@ -60,6 +60,25 @@ operator-=(std::vector<double> &self, const std::vector<double> &other) // "x -=
     }
 }
 
+std::vector<double> 
+operator+(const std::vector<double> &self, const std::vector<double> &other) // "x + y" overloading
+{
+    std::vector<double> res = self;
+    res += other;
+    return res;
+}
+
+
+void
+operator+=(std::vector<double> &self, const std::vector<double> &other) // "x += y" overloading
+{
+    if (self.size() == other.size()) {
+        for (size_t i = 0; i < other.size(); i++) {
+            self[i] += other[i];
+        }
+    }
+}
+
 std::vector<double>
 operator*(Matrix &A, const std::vector<double> &x) // "A * v" overloading
 {
@@ -75,17 +94,23 @@ operator*(Matrix &A, const std::vector<double> &x) // "A * v" overloading
 }
 
 std::vector<double> 
-operator*(const std::vector<double> x, double a) // "v * const" overloading
+operator*(const std::vector<double> x, const double &a) // "v * const" overloading
 {
     std::vector<double> result = x;
-    for (size_t i = 0; i < x.size(); i++) {
-        result[i] *= a;
-    }
+    result *= a;
     return result;
 }
 
+void
+operator*=(std::vector<double> &self, const double &a)
+{
+    for (size_t i = 0; i < self.size(); i++) {
+        self[i] *= a;
+    }   
+}
+
 std::vector<double> 
-operator/(const std::vector<double> x, double a) // "v / const" overloading
+operator/(const std::vector<double> x, const double &a) // "v / const" overloading
 {
     std::vector<double> result = x;
     for (size_t i = 0; i < x.size(); i++) {
@@ -123,5 +148,23 @@ matrix_maximum_norm(const Matrix &A) // matrix maximum norm
 void 
 matvec(const HouseholderMatrix &H, std::vector<double> &v) // reflection operation (H * v)
 {
-    v -= H.w * 2 * dot_product(H.w, v); 
+    v -= H.w * 2 * dot_product(H.w, v);
+    if (H.coeff == -1) {
+        v *= H.coeff; 
+    }
+}
+
+void 
+make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y)
+{
+    double cos = dot_product(x, y) / (norm(x) * norm(y));
+    std::vector<double> x_normalized = x / norm(x);
+    std::vector<double> y_normalized = y / norm(y);
+    std::vector<double> w;
+    if (0 <= cos && cos <= 1) {
+        H.w = (x_normalized + y_normalized) / norm(x_normalized + y_normalized);
+        H.coeff = -1;
+    } else {
+        H.w = (x_normalized - y_normalized) / norm(x_normalized - y_normalized);
+    }
 }
