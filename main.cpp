@@ -8,6 +8,8 @@
 #include <chrono>
 
 #include "matrix.hpp"
+#include "Householder.hpp"
+#include "Gramm-Shmidt.hpp"
 
 int
 main()

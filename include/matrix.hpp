@@ -19,8 +19,8 @@ std::vector<double> operator/(const std::vector<double> x, double a);
 
 struct HouseholderMatrix // struct for Householder matrices
 {
-    std::vector<double> w;
-    size_t n = 0;
+    std::vector<double> w; // normal vector
+    size_t n = 0; // size
     HouseholderMatrix(const std::vector<double> &v): w(v / norm(v)), n(w.size()) {} // constructor
 };
 

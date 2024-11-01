@@ -42,7 +42,7 @@ std::istream
 }
 
 std::vector<double> 
-operator-(const std::vector<double> &self, const std::vector<double> &other)
+operator-(const std::vector<double> &self, const std::vector<double> &other) // "x - y" overloading
 {
     std::vector<double> res = self;
     res -= other;
@@ -51,7 +51,7 @@ operator-(const std::vector<double> &self, const std::vector<double> &other)
 
 
 void
-operator-=(std::vector<double> &self, const std::vector<double> &other)
+operator-=(std::vector<double> &self, const std::vector<double> &other) // "x -= y" overloading
 {
     if (self.size() == other.size()) {
         for (size_t i = 0; i < other.size(); i++) {
@@ -61,7 +61,7 @@ operator-=(std::vector<double> &self, const std::vector<double> &other)
 }
 
 std::vector<double>
-operator*(Matrix &A, const std::vector<double> &x)
+operator*(Matrix &A, const std::vector<double> &x) // "A * v" overloading
 {
     std::vector<double> result(x.size(), 0);
     for (size_t i = 0; i < A.rows; i++) {
@@ -75,7 +75,7 @@ operator*(Matrix &A, const std::vector<double> &x)
 }
 
 std::vector<double> 
-operator*(const std::vector<double> x, double a)
+operator*(const std::vector<double> x, double a) // "v * const" overloading
 {
     std::vector<double> result = x;
     for (size_t i = 0; i < x.size(); i++) {
@@ -85,7 +85,7 @@ operator*(const std::vector<double> x, double a)
 }
 
 std::vector<double> 
-operator/(const std::vector<double> x, double a)
+operator/(const std::vector<double> x, double a) // "v / const" overloading
 {
     std::vector<double> result = x;
     for (size_t i = 0; i < x.size(); i++) {
@@ -121,7 +121,7 @@ matrix_maximum_norm(const Matrix &A) // matrix maximum norm
 }
 
 void 
-matvec(const HouseholderMatrix &H, std::vector<double> &v)
+matvec(const HouseholderMatrix &H, std::vector<double> &v) // reflection operation (H * v)
 {
     v -= H.w * 2 * dot_product(H.w, v); 
 }
