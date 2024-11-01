@@ -1,8 +1,7 @@
 #include "matrix.hpp"
 
-
 double 
-dot_product(const std::vector<double> &x, const std::vector<double> &y)
+dot_product(const std::vector<double> &x, const std::vector<double> &y) // vector dot_product
 {
     double result = 0;
     if (x.size() == y.size()) {
@@ -14,14 +13,13 @@ dot_product(const std::vector<double> &x, const std::vector<double> &y)
 }
 
 double
-norm(const std::vector<double> &x)
+norm(const std::vector<double> &x) // second Holder norm (||.||_2)
 {
     return std::sqrt(dot_product(x, x));
 }
 
-
 std::ostream 
-&operator<<(std::ostream &os, Matrix& A) // cout overloading
+&operator<<(std::ostream &os, const Matrix& A) // cout overloading
 {
     for (size_t i = 0; i < A.rows; i++) {
         for (size_t j = 0; j < A.cols; j++) {
@@ -43,19 +41,24 @@ std::istream
     return is;
 }
 
-
 std::vector<double> 
 operator-(const std::vector<double> &self, const std::vector<double> &other)
 {
-    std::vector<double> res(other.size(), 0);
-    if (self.size() == other.size()) {
-        for (size_t i = 0; i < other.size(); i++) {
-            res[i] = self[i] - other[i];
-        }
-    }
+    std::vector<double> res = self;
+    res -= other;
     return res;
 }
 
+
+void
+operator-=(std::vector<double> &self, const std::vector<double> &other)
+{
+    if (self.size() == other.size()) {
+        for (size_t i = 0; i < other.size(); i++) {
+            self[i] -= other[i];
+        }
+    }
+}
 
 std::vector<double>
 operator*(Matrix &A, const std::vector<double> &x)
@@ -80,6 +83,7 @@ operator*(const std::vector<double> x, double a)
     }
     return result;
 }
+
 std::vector<double> 
 operator/(const std::vector<double> x, double a)
 {
@@ -90,9 +94,8 @@ operator/(const std::vector<double> x, double a)
     return result;
 }
 
-
 double
-maximum_norm(std::vector<double> x)
+maximum_norm(const std::vector<double> &x) // vector maximum_norm
 {
     double m = 0;    
     for (auto x_i: x) {
@@ -100,4 +103,25 @@ maximum_norm(std::vector<double> x)
         m = abs > m ? abs : m;
     }
     return m;
+}
+
+double
+matrix_maximum_norm(const Matrix &A) // matrix maximum norm
+{
+    double m = 0;
+    for (size_t i = 0; i < A.rows; i++) {
+        double sum = 0;
+        for (size_t j = 0; j < A.cols; j++) {
+            double abs = A(i, j) > 0 ? A(i, j) : -A(i, j);
+            sum += abs;
+        }
+        m = sum > m ? sum : m;
+    } 
+    return m;
+}
+
+void 
+matvec(const HouseholderMatrix &H, std::vector<double> &v)
+{
+    v -= H.w * 2 * dot_product(H.w, v); 
 }
