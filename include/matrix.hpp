@@ -33,6 +33,7 @@ struct Matrix // struct for matrices
     std::vector<std::vector<double>> arr; // array of columns (convenient for calculations)
     size_t rows, cols; // dimensions
 
+    Matrix(): rows(0), cols(0) {}
     Matrix(size_t m, size_t n) : rows(m), cols(n), arr(n, std::vector<double>(m, 0)) {} // constructors
     double &operator()(size_t i, size_t j) { return arr[j][i]; } // element access
     double operator()(size_t i, size_t j) const { return arr[j][i]; } // element access
@@ -57,8 +58,12 @@ std::istream &operator>>(std::istream &is, Matrix& A);
 double maximum_norm(const std::vector<double> &x);
 double matrix_maximum_norm(const Matrix &A);
 
+
+std::vector<double> solve_triangular_system(const Matrix &R, const std::vector<double> &f);
 void matvec(const HouseholderMatrix &H, std::vector<double> &v);
+void matmul(const HouseholderMatrix &H, Matrix &A);
 void make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y, size_t shift);
 void get_reflection(std::vector<double> &ref, std::vector<double> &x, size_t shift);
+
 
 #endif

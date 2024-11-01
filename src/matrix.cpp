@@ -164,12 +164,35 @@ matrix_maximum_norm(const Matrix &A) // matrix maximum norm
 }
 
 
+std::vector<double> 
+solve_triangular_system(const Matrix &R, const std::vector<double> &f) // Gauss method
+{
+    size_t n = f.size() - 1;
+    std::vector<double> x(f.size());
+    for (int m = n; m >= 0; m--) {
+        double s = 0;
+        for (size_t j = m + 1; j <= n; j++) {
+            s += R(m, j) * x[j];
+        }
+        x[m] = (f[m] - s) / R(m, m);
+    }
+    return x;
+}
+
 void 
 matvec(const HouseholderMatrix &H, std::vector<double> &v) // reflection operation (H * v)
 {
     v -= H.w * 2 * dot_product(H.w.begin(), v.begin(), v.size());
     if (H.coeff == -1) {
         v *= H.coeff; 
+    }
+}
+
+void 
+matmul(const HouseholderMatrix &H, Matrix &A)
+{
+    for (size_t j = 0; j < A.cols; j++) {
+        matvec(H, A[j]);
     }
 }
 
