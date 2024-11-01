@@ -1,21 +1,22 @@
 #include "matrix.hpp"
 
 double 
-dot_product(const std::vector<double> &x, const std::vector<double> &y) // vector dot_product
+dot_product(std::vector<double>::const_iterator begin_x, std::vector<double>::const_iterator begin_y, size_t size) // vector dot_product
 {
     double result = 0;
-    if (x.size() == y.size()) {
-        for (size_t i = 0; i < y.size(); i++) {
-            result += x[i] * y[i];
-        }
+    for (size_t i = 0; i < size; i++) {
+        result += (*begin_x) * (*begin_y);
+        //std::cout << "size = " << size << ": += " << (*begin_x) << " * " << (*begin_y) << std::endl;
+        begin_x++;
+        begin_y++;
     }
     return result;
 }
 
 double
-norm(const std::vector<double> &x) // second Holder norm (||.||_2)
+norm(const std::vector<double> &x, size_t shift) // second Holder norm (||.||_2)
 {
-    return std::sqrt(dot_product(x, x));
+    return std::sqrt(dot_product(x.cbegin() + shift, x.cbegin() + shift, x.size() - shift));
 }
 
 std::ostream 
@@ -27,6 +28,23 @@ std::ostream
         }
         os << std::endl;
     }
+    return os;
+}
+
+std::ostream 
+&operator<<(std::ostream &os, const std::vector<double>& v)
+{
+    for (auto i: v) {
+        std::cout << i << ' ';
+    }
+    std::cout << std::endl;
+    return os;
+}
+
+std::ostream 
+&operator<<(std::ostream &os, const HouseholderMatrix& T)
+{
+    std::cout << T.w;
     return os;
 }
 
@@ -145,26 +163,37 @@ matrix_maximum_norm(const Matrix &A) // matrix maximum norm
     return m;
 }
 
+
 void 
 matvec(const HouseholderMatrix &H, std::vector<double> &v) // reflection operation (H * v)
 {
-    v -= H.w * 2 * dot_product(H.w, v);
+    v -= H.w * 2 * dot_product(H.w.begin(), v.begin(), v.size());
     if (H.coeff == -1) {
         v *= H.coeff; 
     }
 }
 
 void 
-make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y)
+make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y, size_t shift) // Make H: x -> y
 {
-    double cos = dot_product(x, y) / (norm(x) * norm(y));
-    std::vector<double> x_normalized = x / norm(x);
-    std::vector<double> y_normalized = y / norm(y);
-    std::vector<double> w;
-    if (0 <= cos && cos <= 1) {
-        H.w = (x_normalized + y_normalized) / norm(x_normalized + y_normalized);
-        H.coeff = -1;
-    } else {
-        H.w = (x_normalized - y_normalized) / norm(x_normalized - y_normalized);
+    double cos = dot_product(x.begin() + shift, y.begin() + shift, y.size()) / (norm(x, shift) * norm(y, shift));
+    int sign = cos > 0 ? 1 : -1;
+    std::vector<double> x_normalized = x;
+    std::vector<double> y_normalized = y * sign;
+    for (size_t i = 0; i < shift; i++) {
+        x_normalized[i] = 0;
+        y_normalized[i] = 0;
     }
+    H.w = (x_normalized + y_normalized) / norm(x_normalized + y_normalized);
+    H.coeff = -sign;
+}
+
+void
+get_reflection(std::vector<double> &ref, std::vector<double> &x, size_t shift)
+{
+    double sub_vec_norm = norm(x, shift);
+    for (size_t i = 0; i < shift; i++) {
+        ref[i] = x[i];
+    } 
+    ref[shift] = sub_vec_norm;
 }

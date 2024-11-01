@@ -15,17 +15,25 @@ using std::vector;
 int
 main()
 {
-    size_t m, n;
-    //std::cin >> m >> n;
-    Matrix A(m, n);
-    //std::cin >> A;
-    HouseholderMatrix H;
-    vector<double> x = {-1 , 1};
-    vector<double> y = {1, 0};
-    make_reflection(H, x, y);
-    for(auto i: H.w) {
-        std::cout << i << ' ';
+    size_t n;
+    std::cin >> n;
+    Matrix A(n, n);
+    std::cin >> A;
+    std::cout << '\n';
+    std::vector<HouseholderMatrix> H;
+   // std::cout << std::endl << A << std::endl;
+    QRHouseholder(H, A);
+    std::pair<std::vector<HouseholderMatrix>, Matrix> result = std::make_pair(H, A);
+    std::cout << result << std::endl;
+    std::reverse(H.begin(), H.end());
+    for (auto T: H) {
+        for (size_t j = 0; j < A.cols; j++) {
+            matvec(T, A[j]);
+        }
     }
-    std::cout << std::endl;
+    std::cout << A;
+//    vector<double> x = {-4 ,1, 4, 3, 1};
+  //  std::cout << x << std::endl;
+    
     return 0;
 }

@@ -9,7 +9,7 @@
 
 struct Matrix;
 struct HouseholderMatrix;
-double norm(const std::vector<double> &x);
+double norm(const std::vector<double> &x, size_t shift=0);
 std::vector<double> operator*(Matrix &A, const std::vector<double> &x);
 std::vector<double> operator-(const std::vector<double> &self, const std::vector<double> &other);
 void operator-=(std::vector<double> &self, const std::vector<double> &other);
@@ -34,7 +34,6 @@ struct Matrix // struct for matrices
     size_t rows, cols; // dimensions
 
     Matrix(size_t m, size_t n) : rows(m), cols(n), arr(n, std::vector<double>(m, 0)) {} // constructors
-    Matrix(size_t n) : Matrix(n, n) {}  // square matrix constructor
     double &operator()(size_t i, size_t j) { return arr[j][i]; } // element access
     double operator()(size_t i, size_t j) const { return arr[j][i]; } // element access
     Matrix operator-(Matrix B) const {
@@ -46,16 +45,20 @@ struct Matrix // struct for matrices
         }
         return C;
     }
+    std::vector<double> &operator[](size_t i) { return arr[i]; } // get i-column
 };
 
 
-double dot_product(const std::vector<double> &x, const std::vector<double> &y);
+double dot_product(std::vector<double>::const_iterator begin_x, std::vector<double>::const_iterator begin_y, size_t size);
 std::ostream &operator<<(std::ostream &os, const Matrix& A);
+std::ostream &operator<<(std::ostream &os, const std::vector<double>& v);
+std::ostream &operator<<(std::ostream &os, const HouseholderMatrix& T);
 std::istream &operator>>(std::istream &is, Matrix& A);
 double maximum_norm(const std::vector<double> &x);
 double matrix_maximum_norm(const Matrix &A);
 
 void matvec(const HouseholderMatrix &H, std::vector<double> &v);
-void make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y);
+void make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y, size_t shift);
+void get_reflection(std::vector<double> &ref, std::vector<double> &x, size_t shift);
 
 #endif
