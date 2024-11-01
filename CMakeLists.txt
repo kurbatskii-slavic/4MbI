@@ -13,3 +13,8 @@ add_executable(main main.cpp ${SOURCE})
 
 set(INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_include_directories(main PRIVATE ${INCLUDE})
+
+option(EXEC_TIME "execution time" OFF)
+if(EXEC_TIME)
+    target_compile_definitions(main PRIVATE TIME)
+endif()

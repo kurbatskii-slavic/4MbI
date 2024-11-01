@@ -1,6 +1,25 @@
 #include "matrix.hpp"
 
 
+double 
+dot_product(const std::vector<double> &x, const std::vector<double> &y)
+{
+    double result = 0;
+    if (x.size() == y.size()) {
+        for (size_t i = 0; i < y.size(); i++) {
+            result += x[i] * y[i];
+        }
+    }
+    return result;
+}
+
+double
+norm(const std::vector<double> &x)
+{
+    return std::sqrt(dot_product(x, x));
+}
+
+
 std::ostream 
 &operator<<(std::ostream &os, Matrix& A) // cout overloading
 {
@@ -48,6 +67,25 @@ operator*(Matrix &A, const std::vector<double> &x)
             sum += x[j] * A(i, j);           
         }    
         result[i] = sum;
+    }
+    return result;
+}
+
+std::vector<double> 
+operator*(const std::vector<double> x, double a)
+{
+    std::vector<double> result = x;
+    for (size_t i = 0; i < x.size(); i++) {
+        result[i] *= a;
+    }
+    return result;
+}
+std::vector<double> 
+operator/(const std::vector<double> x, double a)
+{
+    std::vector<double> result = x;
+    for (size_t i = 0; i < x.size(); i++) {
+        result[i] /= a;
     }
     return result;
 }
