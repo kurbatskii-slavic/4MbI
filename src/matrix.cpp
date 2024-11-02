@@ -6,7 +6,6 @@ dot_product(std::vector<double>::const_iterator begin_x, std::vector<double>::co
     double result = 0;
     for (size_t i = 0; i < size; i++) {
         result += (*begin_x) * (*begin_y);
-        //std::cout << "size = " << size << ": += " << (*begin_x) << " * " << (*begin_y) << std::endl;
         begin_x++;
         begin_y++;
     }
@@ -98,7 +97,7 @@ operator+=(std::vector<double> &self, const std::vector<double> &other) // "x +=
 }
 
 std::vector<double>
-operator*(Matrix &A, const std::vector<double> &x) // "A * v" overloading
+operator*(const Matrix &A, const std::vector<double> &x) // "A * v" overloading
 {
     std::vector<double> result(x.size(), 0);
     for (size_t i = 0; i < A.rows; i++) {
@@ -109,6 +108,16 @@ operator*(Matrix &A, const std::vector<double> &x) // "A * v" overloading
         result[i] = sum;
     }
     return result;
+}
+
+Matrix 
+operator*(const Matrix &A, const Matrix &B)
+{
+    Matrix C;
+    for (size_t i = 0; i < B.cols; i++) {
+        C[i] = A * B[i];
+    }
+    return C;
 }
 
 std::vector<double> 

@@ -10,7 +10,8 @@
 struct Matrix;
 struct HouseholderMatrix;
 double norm(const std::vector<double> &x, size_t shift=0);
-std::vector<double> operator*(Matrix &A, const std::vector<double> &x);
+std::vector<double> operator*(const Matrix &A, const std::vector<double> &x);
+Matrix operator*(const Matrix &A, const Matrix &B);
 std::vector<double> operator-(const std::vector<double> &self, const std::vector<double> &other);
 void operator-=(std::vector<double> &self, const std::vector<double> &other);
 std::vector<double> operator+(const std::vector<double> &self, const std::vector<double> &other);
@@ -47,6 +48,7 @@ struct Matrix // struct for matrices
         return C;
     }
     std::vector<double> &operator[](size_t i) { return arr[i]; } // get i-column
+    std::vector<double> operator[](size_t i) const { return arr[i]; } // get i-column
 };
 
 
@@ -62,6 +64,8 @@ double matrix_maximum_norm(const Matrix &A);
 std::vector<double> solve_triangular_system(const Matrix &R, const std::vector<double> &f);
 void matvec(const HouseholderMatrix &H, std::vector<double> &v);
 void matmul(const HouseholderMatrix &H, Matrix &A);
+
+
 void make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y, size_t shift);
 void get_reflection(std::vector<double> &ref, std::vector<double> &x, size_t shift);
 
