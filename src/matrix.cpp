@@ -193,15 +193,10 @@ matvec(const HouseholderMatrix &H, std::vector<double> &v) // reflection operati
 {
     v -= H.w * 2 * dot_product(H.w.begin(), v.begin(), v.size());
     if (H.coeff == -1) {
-        v *= H.coeff; 
-    }
-}
-
-void 
-matmul(const HouseholderMatrix &H, Matrix &A)
-{
-    for (size_t j = 0; j < A.cols; j++) {
-        matvec(H, A[j]);
+        for (auto i = v.begin() + H.shift; i < v.end(); i++) {
+            (*i) *= H.coeff;
+        }
+        //v *= H.coeff;
     }
 }
 
@@ -218,6 +213,7 @@ make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::v
     }
     H.w = (x_normalized + y_normalized) / norm(x_normalized + y_normalized);
     H.coeff = -sign;
+    H.shift = shift;
 }
 
 void

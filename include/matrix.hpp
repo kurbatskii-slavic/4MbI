@@ -23,6 +23,7 @@ std::vector<double> operator/(const std::vector<double> x, const double &a);
 struct HouseholderMatrix // struct for Householder matrices
 {
     std::vector<double> w; // normal vector
+    size_t shift = 0;
     int coeff = 1;
     HouseholderMatrix(){};
     HouseholderMatrix(const std::vector<double> &v): w(v / norm(v)) {} // constructor
@@ -63,7 +64,6 @@ double matrix_maximum_norm(const Matrix &A);
 
 std::vector<double> solve_triangular_system(const Matrix &R, const std::vector<double> &f);
 void matvec(const HouseholderMatrix &H, std::vector<double> &v);
-void matmul(const HouseholderMatrix &H, Matrix &A);
 
 
 void make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y, size_t shift);

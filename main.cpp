@@ -43,12 +43,15 @@ main()
             A_f(i, j) = 0; // place 0 for better precision
         }
     }
+    std::cout << A_f << '\n';
     std::pair<std::vector<HouseholderMatrix>, Matrix> result = std::make_pair(H, A_f); // store the result
-    Matrix A_tmp = A_f;
-    for (auto i = H.rbegin(); i < H.rend(); i++) { // calculate A_tmp = QR
-        matmul(*i, A_tmp);
+    Matrix R = A_f;
+    for (int i = H.size() - 1; i >= 0; i--) {
+        for (size_t j = 0; j < R.cols; j++) {
+            matvec(H[i], R[j]);
+        }
     }
-    std::cout << "Householder: ||A - QR|| = " << matrix_maximum_norm(A - A_tmp) << std::endl; 
+    std::cout << "Householder: ||A - QR|| = " << matrix_maximum_norm(A - R) << std::endl; 
     std::vector<double> f_n = f;
     for (auto &T: H) matvec(T, f_n); // transform Ax = f -> Rx = Q^T f
     std::vector<double> x_f(SIZE);
