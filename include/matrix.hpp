@@ -9,7 +9,7 @@
 
 struct Matrix;
 struct HouseholderMatrix;
-double norm(const std::vector<double> &x, size_t shift=0);
+double norm(const std::vector<double> &x, const size_t &shift=0);
 std::vector<double> operator*(const Matrix &A, const std::vector<double> &x);
 Matrix operator*(const Matrix &A, const Matrix &B);
 std::vector<double> operator-(const std::vector<double> &self, const std::vector<double> &other);
@@ -39,7 +39,7 @@ struct Matrix // struct for matrices
     Matrix(size_t m, size_t n) : rows(m), cols(n), arr(n, std::vector<double>(m, 0)) {} // constructors
     double &operator()(size_t i, size_t j) { return arr[j][i]; } // element access
     double operator()(size_t i, size_t j) const { return arr[j][i]; } // element access
-    Matrix operator-(Matrix B) const {
+    Matrix operator-(Matrix &B) const {
         Matrix C = *this;
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {
@@ -53,7 +53,7 @@ struct Matrix // struct for matrices
 };
 
 
-double dot_product(std::vector<double> x, std::vector<double> y, size_t shift);
+double dot_product(const std::vector<double> &x, const std::vector<double> &y, const size_t &shift=0);
 std::ostream &operator<<(std::ostream &os, const Matrix& A);
 std::ostream &operator<<(std::ostream &os, const std::vector<double>& v);
 std::ostream &operator<<(std::ostream &os, const HouseholderMatrix& T);
@@ -66,8 +66,8 @@ std::vector<double> solve_triangular_system(const Matrix &R, const std::vector<d
 void matvec(const HouseholderMatrix &H, std::vector<double> &v);
 
 
-void make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y, size_t shift);
-void get_reflection(std::vector<double> &ref, std::vector<double> &x, size_t shift);
+void make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y, const size_t &shift);
+void get_reflection(std::vector<double> &ref, const std::vector<double> &x, const size_t &shift);
 
 
 #endif

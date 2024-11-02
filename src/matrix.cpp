@@ -1,7 +1,7 @@
 #include "matrix.hpp"
 
 double 
-dot_product(std::vector<double> x, std::vector<double> y, size_t shift) // vector dot_product
+dot_product(const std::vector<double> &x, const std::vector<double> &y, const size_t &shift) // vector dot_product
 {
     double result = 0;
     auto j = y.begin() + shift;
@@ -12,7 +12,7 @@ dot_product(std::vector<double> x, std::vector<double> y, size_t shift) // vecto
 }
 
 double
-norm(const std::vector<double> &x, size_t shift) // second Holder norm (||.||_2)
+norm(const std::vector<double> &x, const size_t &shift) // second Holder norm (||.||_2)
 {
     return std::sqrt(dot_product(x, x, shift));
 }
@@ -190,7 +190,7 @@ solve_triangular_system(const Matrix &R, const std::vector<double> &f) // Gauss 
 void 
 matvec(const HouseholderMatrix &H, std::vector<double> &v) // reflection operation (H * v)
 {
-    v -= H.w * 2 * dot_product(H.w, v, H.shift);
+    v -= H.w * (2 * dot_product(H.w, v, H.shift));
     if (H.coeff == -1) {
         for (auto i = v.begin() + H.shift; i < v.end(); i++) {
             (*i) *= H.coeff;
@@ -199,24 +199,22 @@ matvec(const HouseholderMatrix &H, std::vector<double> &v) // reflection operati
 }
 
 void 
-make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y, size_t shift) // Make H: x -> y
+make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y, const size_t &shift) // Make H: x -> y
 {
-    double cos = dot_product(x, y, shift) / (norm(x, shift) * norm(y, shift));
-    int sign = cos > 0 ? 1 : -1;
-    std::vector<double> x_normalized = x;
-    std::vector<double> y_normalized = y * sign;
+    int sign = dot_product(x, y, shift) > 0 ? 1 : -1;
+    std::vector<double> v = x + y * sign;
     for (size_t i = 0; i < shift; i++) {
-        x_normalized[i] = 0;
-        y_normalized[i] = 0;
+       v[i] = 0;
     }
-    H.w = (x_normalized + y_normalized) / norm(x_normalized + y_normalized);
+    H.w = v / norm(v);
     H.coeff = -sign;
     H.shift = shift;
 }
 
 void
-get_reflection(std::vector<double> &ref, std::vector<double> &x, size_t shift)
+get_reflection(std::vector<double> &ref, const std::vector<double> &x, const size_t &shift)
 {
+    ref = std::vector<double>(ref.size(), 0);
     double sub_vec_norm = norm(x, shift);
     for (size_t i = 0; i < shift; i++) {
         ref[i] = x[i];
