@@ -1,13 +1,12 @@
 #include "matrix.hpp"
 
 double 
-dot_product(std::vector<double>::const_iterator begin_x, std::vector<double>::const_iterator begin_y, size_t size) // vector dot_product
+dot_product(std::vector<double> x, std::vector<double> y, size_t shift) // vector dot_product
 {
     double result = 0;
-    for (size_t i = 0; i < size; i++) {
-        result += (*begin_x) * (*begin_y);
-        begin_x++;
-        begin_y++;
+    auto j = y.begin() + shift;
+    for (auto i = x.begin() + shift; i < x.end(); i++, j++) {
+        result += (*i) * (*j);
     }
     return result;
 }
@@ -15,7 +14,7 @@ dot_product(std::vector<double>::const_iterator begin_x, std::vector<double>::co
 double
 norm(const std::vector<double> &x, size_t shift) // second Holder norm (||.||_2)
 {
-    return std::sqrt(dot_product(x.cbegin() + shift, x.cbegin() + shift, x.size() - shift));
+    return std::sqrt(dot_product(x, x, shift));
 }
 
 std::ostream 
@@ -191,19 +190,18 @@ solve_triangular_system(const Matrix &R, const std::vector<double> &f) // Gauss 
 void 
 matvec(const HouseholderMatrix &H, std::vector<double> &v) // reflection operation (H * v)
 {
-    v -= H.w * 2 * dot_product(H.w.begin(), v.begin(), v.size());
+    v -= H.w * 2 * dot_product(H.w, v, H.shift);
     if (H.coeff == -1) {
         for (auto i = v.begin() + H.shift; i < v.end(); i++) {
             (*i) *= H.coeff;
         }
-        //v *= H.coeff;
     }
 }
 
 void 
 make_reflection(HouseholderMatrix &H, const std::vector<double> &x, const std::vector<double> &y, size_t shift) // Make H: x -> y
 {
-    double cos = dot_product(x.begin() + shift, y.begin() + shift, y.size()) / (norm(x, shift) * norm(y, shift));
+    double cos = dot_product(x, y, shift) / (norm(x, shift) * norm(y, shift));
     int sign = cos > 0 ? 1 : -1;
     std::vector<double> x_normalized = x;
     std::vector<double> y_normalized = y * sign;

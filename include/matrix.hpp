@@ -53,7 +53,7 @@ struct Matrix // struct for matrices
 };
 
 
-double dot_product(std::vector<double>::const_iterator begin_x, std::vector<double>::const_iterator begin_y, size_t size);
+double dot_product(std::vector<double> x, std::vector<double> y, size_t shift);
 std::ostream &operator<<(std::ostream &os, const Matrix& A);
 std::ostream &operator<<(std::ostream &os, const std::vector<double>& v);
 std::ostream &operator<<(std::ostream &os, const HouseholderMatrix& T);
