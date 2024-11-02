@@ -11,7 +11,7 @@ struct Matrix;
 struct HouseholderMatrix;
 double norm(const std::vector<double> &x, const size_t &shift=0);
 std::vector<double> operator*(const Matrix &A, const std::vector<double> &x);
-Matrix operator*(const Matrix &A, const Matrix &B);
+const Matrix operator*(const Matrix &A, const Matrix &B);
 std::vector<double> operator-(const std::vector<double> &self, const std::vector<double> &other);
 void operator-=(std::vector<double> &self, const std::vector<double> &other);
 std::vector<double> operator+(const std::vector<double> &self, const std::vector<double> &other);
@@ -34,12 +34,12 @@ struct Matrix // struct for matrices
 {
     std::vector<std::vector<double>> arr; // array of columns (convenient for calculations)
     size_t rows, cols; // dimensions
-
+    bool transposed = false;
     Matrix(): rows(0), cols(0) {}
     Matrix(size_t m, size_t n) : rows(m), cols(n), arr(n, std::vector<double>(m, 0)) {} // constructors
-    double &operator()(size_t i, size_t j) { return arr[j][i]; } // element access
-    double operator()(size_t i, size_t j) const { return arr[j][i]; } // element access
-    Matrix operator-(Matrix &B) const {
+    double &operator()(size_t i, size_t j) { return transposed ? arr[i][j] : arr[j][i]; } // element access
+    double operator()(size_t i, size_t j) const { return transposed ? arr[i][j] : arr[j][i]; } // element access
+    Matrix operator-(const Matrix &B) const {
         Matrix C = *this;
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {
@@ -48,6 +48,7 @@ struct Matrix // struct for matrices
         }
         return C;
     }
+    void transpose() { transposed = !transposed; }
     std::vector<double> &operator[](size_t i) { return arr[i]; } // get i-column
     std::vector<double> operator[](size_t i) const { return arr[i]; } // get i-column
 };

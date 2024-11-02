@@ -102,17 +102,17 @@ operator*(const Matrix &A, const std::vector<double> &x) // "A * v" overloading
     for (size_t i = 0; i < A.rows; i++) {
         double sum = 0;
         for (size_t j = 0; j < A.cols; j++) {
-            sum += x[j] * A(i, j);           
+            sum += x[j] * A(i, j);
         }    
         result[i] = sum;
     }
     return result;
 }
 
-Matrix 
+const Matrix 
 operator*(const Matrix &A, const Matrix &B)
 {
-    Matrix C;
+    Matrix C(A.rows, A.cols);
     for (size_t i = 0; i < B.cols; i++) {
         C[i] = A * B[i];
     }
