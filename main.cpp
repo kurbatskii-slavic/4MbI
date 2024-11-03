@@ -52,7 +52,7 @@ main(int argc, char** argv)
             matvec(H[i], R_f[j]); // calculate QR
         }
     }
-    std::cout << "Householder: ||A - QR|| = " << matrix_maximum_norm(A - R_f) << std::endl << std::endl; 
+    std::cout << "||A - QR|| = " << matrix_maximum_norm(A - R_f) << std::endl << std::endl; 
     
     #ifdef TIME // time measure
         const auto start_2{std::chrono::steady_clock::now()}; // start time
@@ -68,27 +68,41 @@ main(int argc, char** argv)
             R(i, j) = 0; // place 0 for better precision
         }
     }
-    std::cout << "Gramm-Shmidt: ||A - QR|| = " << matrix_maximum_norm(A - Q * R) << std::endl << std::endl; 
+    std::cout << "||A - QR|| = " << matrix_maximum_norm(A - Q * R) << std::endl << std::endl; 
 
 
     // Householder
     std::vector<double> f_n = f;
-    for (auto &T: H) matvec(T, f_n); // transform Ax = f -> Rx = Q^T f
     std::vector<double> x_f(SIZE);
+    #ifdef TIME // time measure
+        const auto start_4{std::chrono::steady_clock::now()}; // start time
+    #endif
+    for (auto &T: H) matvec(T, f_n); // transform Ax = f -> Rx = Q^T f
     x_f = solve_triangular_system(R_h, f_n);
+    #ifdef TIME
+        const auto end_4{std::chrono::steady_clock::now()}; // end time
+        const std::chrono::duration<double> elapsed_seconds_4{end_4 - start_4}; // duration
+        std::cout << "Time: (Householder system): " << elapsed_seconds_4.count() * SCALE << "ms" << std::endl; // display duration
+    #endif
     double f_error = maximum_norm(f - A * x_f); // calculate f error 
     double x_error = maximum_norm(x - x_f); // calculate x error
-    std::cout << "Householder: \n";
     std::cout << "||x - x_f|| = " <<  x_error << std::endl;
     std::cout << "||f - Ax_f|| = " << f_error << std::endl << std::endl;
 
     //Gramm-Shmidt
+    #ifdef TIME // time measure
+        const auto start_3{std::chrono::steady_clock::now()}; // start time
+    #endif
     Q.transpose();
     f_n = Q * f;
     x_f = solve_triangular_system(R, f_n);
+    #ifdef TIME
+        const auto end_3{std::chrono::steady_clock::now()}; // end time
+        const std::chrono::duration<double> elapsed_seconds_3{end_3 - start_3}; // duration
+        std::cout << "Time: (Gramm-Shmidt system): " << elapsed_seconds_3.count() * SCALE << "ms" << std::endl; // display duration
+    #endif
     f_error = maximum_norm(f - A * x_f); // calculate f error 
     x_error = maximum_norm(x - x_f); // calculate x error
-    std::cout << "Gramm-Shmidt: \n";
     std::cout << "||x - x_f|| = " <<  x_error << std::endl;
     std::cout << "||f - Ax_f|| = " << f_error << std::endl;
     return 0;
