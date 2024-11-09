@@ -11,7 +11,7 @@
 
 #include "matrix.hpp"
 #include "Householder.hpp"
-#include "Gramm-Shmidt.hpp"
+#include "Gram-Shmidt.hpp"
 #include "generate_rand.hpp"
 
 
@@ -57,7 +57,7 @@ main(int argc, char** argv)
     #ifdef TIME // time measure
         const auto start_2{std::chrono::steady_clock::now()}; // start time
     #endif
-    QRGramm_Shmidt(Q, R, A);
+    QRGram_Shmidt(Q, R, A);
     #ifdef TIME
         const auto end_2{std::chrono::steady_clock::now()}; // end time
         const std::chrono::duration<double> elapsed_seconds_2{end_2 - start_2}; // duration

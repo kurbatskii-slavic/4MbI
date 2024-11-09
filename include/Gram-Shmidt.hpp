@@ -2,10 +2,11 @@
 #include <vector>
 
 void
-QRGramm_Shmidt(Matrix &Q, Matrix &R, const Matrix &A) // QR decomposition using Gramm-Shmidt orthogonalization algorithm
+QRGram_Shmidt(Matrix &Q, Matrix &R, const Matrix &A) // QR decomposition using Gramm-Shmidt orthogonalization algorithm
 {
+    std::vector<double> b_k;
     for (size_t k = 0; k < Q.cols; k++) {
-        std::vector<double> b_k = A[k];
+        b_k = A[k];
         for (size_t s = 0; s < k; s++) {
             R(s, k) = dot_product(A[k], Q[s]);
             b_k -= Q[s] * R(s, k);
